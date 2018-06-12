@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Z-TOVEN.JS</title>
+    <link rel=stylesheet href="stylesheets/ztoven.css">
+    <script type="text/javascript" src="js/lib/paper-full.js"></script>
+    <script type="text/javascript" src="js/lib/howler.js"></script>
+    <script type="text/paperscript" canvas="myCanvas">
+
+      var keyData = {
+        q: {
+        sound: new Howl({
+          src: ['sounds/808 1 (LAYER WITH KICK 1).mp3']
+        }),
+        color: '#1abc9c'
+        },
+        w: {
+        sound: new Howl({
+          src: ['sounds/808 3 (Lay Up - Future).mp3']
+        }),
+        color: '#2ecc71'
+        },
+        e: {
+        sound: new Howl({
+          src: ['sounds/808 4 (Just Like Bruddas - Future).mp3']
+        }),
+        color: '#3498db'
+        },
+        r: {
+        sound: new Howl({
+          src: ['sounds/Ahh.mp3']
+        }),
+        color: '#9b59b6'
+        },
+        t: {
+        sound: new Howl({
+          src: ['sounds/Bell 1 (Official).mp3']
+        }),
+        color: '#34495e'
+        },
+        y: {
+        sound: new Howl({
+          src: ['sounds/Chant (Clean).mp3']
+        }),
+        color: '#16a085'
+        },
+        u: {
+        sound: new Howl({
+          src: ['sounds/Clap 1 (Clean).mp3']
+        }),
+        color: '#27ae60'
+        },
+        i: {
+        sound: new Howl({
+          src: ['sounds/Clap 2.mp3']
+        }),
+        color: '#2980b9'
+        },
+        o: {
+        sound: new Howl({
+        src: ['sounds/Clap 6.mp3']
+        }),
+        color: '#8e44ad'
+        },
+        p: {
+        sound: new Howl({
+          src: ['sounds/Cymbal 2.mp3']
+        }),
+        color: '#2c3e50'
+        },
+        a: {
+        sound: new Howl({
+          src: ['sounds/Cymbal 5.mp3']
+        }),
+        color: '#f1c40f'
+        },
+        s: {
+        sound: new Howl({
+          src: ['sounds/FX - Stomp 3.mp3']
+        }),
+        color: '#e67e22'
+        },
+        d: {
+        sound: new Howl({
+          src: ['sounds/FX - Stomp 5.mp3']
+        }),
+        color: '#e74c3c'
+        },
+        f: {
+        sound: new Howl({
+          src: ['sounds/Hat 2.mp3']
+        }),
+        color: '#95a5a6'
+        },
+        g: {
+        sound: new Howl({
+          src: ['sounds/Hey!.mp3']
+        }),
+        color: '#f39c12'
+        },
+        h: {
+        sound: new Howl({
+          src: ['sounds/Hi Hat 1.mp3']
+        }),
+        color: '#d35400'
+        },
+        j: {
+        sound: new Howl({
+          src: ['sounds/Hi Hat 4.mp3']
+        }),
+        color: '#1abc9c'
+        },
+        k: {
+        sound: new Howl({
+          src: ['sounds/Hi-Hat 1 (Keep It 100 - Rich The Kid).mp3']
+        }),
+        color: '#2ecc71'
+        },
+        l: {
+        sound: new Howl({
+          src: ['sounds/Juiceman Okay!.mp3']
+        }),
+        color: '#3498db'
+        },
+        z: {
+        sound: new Howl({
+          src: ['sounds/Juiceman Aye.mp3']
+        }),
+        color: '#9b59b6'
+        },
+        x: {
+        sound: new Howl({
+          src: ['sounds/Perc 1 (Handsome & Wealthy - Migos).mp3']
+        }),
+        color: '#34495e'
+        },
+        c: {
+        sound: new Howl({
+          src: ['sounds/Rim 1 (Zaytoven).mp3']
+        }),
+        color: '#16a085'
+        },
+        v: {
+        sound: new Howl({
+          src: ['sounds/Rim 3.mp3']
+        }),
+        color: '#27ae60'
+        },
+        b: {
+        sound: new Howl({
+          src: ['sounds/Tabla 1 (Hobby - Chief Keef).mp3']
+        }),
+        color: '#2980b9'
+        },
+        n: {
+        sound: new Howl({
+        src: ['sounds/Tom 2.mp3']
+        }),
+        color: '#8e44ad'
+        },
+        m: {
+        sound: new Howl({
+          src: ['sounds/Snare 20.mp3']
+        }),
+        color: '#2c3e50'
+        }
+      }
+
+      var shapes = [];
+
+      function randomPt() {
+        var maxPoint = new Point(view.size.width, view.size.height);
+        var randomPoint = Point.random();
+        var point = maxPoint * randomPoint;
+        return point;
+      }
+
+      function shapeList() {
+        var star = new Path.Star({
+          center: randomPt(),
+          points: 5,
+          radius1: 150,
+          radius2: 230,
+        });
+        var circle = new Path.Circle(randomPt(), 400);
+        var triangle = new Path.RegularPolygon(new Point(randomPt()), 3, 400);
+        var square = new Shape.Rectangle({
+          point: randomPt(),
+          size: [400, 400],
+        });
+        var randomShape = [circle,star,square, triangle];
+        var randomIndex = Math.floor(Math.random() * randomShape.length);
+        return randomShape[randomIndex];
+      }
+
+      function onKeyDown(event) {
+        var newShape = shapeList();
+        if(keyData[event.key]) {
+          newShape.fillColor = keyData[event.key].color;
+          keyData[event.key].sound.play();
+          shapes.push(newShape);
+        }
+      }
+
+      function onFrame(event){
+        for(var i = 0; i < shapes.length; i++){
+          shapes[i].scale(0.9);
+          shapes[i].fillColor.hue += 1;
+          if(shapes[i].area < 1){
+            shapes[i].remove(); // remove the circle from the canvas
+            shapes.splice(i, 1); // remove the circle from the array
+            i--; // decrement i so that the loop doesn't skip a circle because of .splice()
+          }
+        }
+      }
+
+    </script>
+  </head>
+  <body>
+    <canvas id="myCanvas" resize></canvas>
+  </body>
+</html>
